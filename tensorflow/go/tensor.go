@@ -98,9 +98,7 @@ func NewTensor(value interface{}) (*Tensor, error) {
 
 	raw := tensorData(t.c)
 
-	defer runtime.SetFinalizer(t, func(t *Tensor) {
-		t.finalize()
-	})
+	runtime.SetFinalizer(t, (*Tensor).finalize)
 
 	buf := bytes.NewBuffer(raw[:0:len(raw)])
 
@@ -115,10 +113,7 @@ func NewTensor(value interface{}) (*Tensor, error) {
 		// not be contiguous with the others or in the order we might
 		// expect, so we need to work our way down to each slice of
 		// primitives and copy them individually
-		if n, err := encodeTensorWithSlices(buf, val, shape); err != nil {
-			// Set nbytes to count of bytes written for deferred call to
-			// runtime.SetFinalizer
-			nbytes = uintptr(n)
+		if _, err := encodeTensorWithSlices(buf, val, shape); err != nil {
 			return nil, err
 		}
 	}
