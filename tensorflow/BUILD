@@ -994,6 +994,9 @@ tf_cc_shared_object(
         ],
         "//tensorflow:windows": [
         ],
+        "//tensorflow:freebsd": [
+            "-Wl,--version-script,$(location //tensorflow/c:version_script.lds)",
+        ],
         # copybara:uncomment_begin(google-only)
         # "//tools/cpp:asan_build": [
         # "-Wl,--version-script,$(location //tensorflow/c:version_script.lds)",
